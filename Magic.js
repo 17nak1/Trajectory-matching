@@ -1,6 +1,10 @@
+/**
+ *  @file       Magic.js  
+ */
+
 let traj_match = require('traj').traj_match
 var dataCovar = [], dataCases = [], inputArr = [], init = [], res = []
-var indx = new Array(12), times = new Array(2)
+var indx = new Array(12)
 
 function start () {
   let req = new XMLHttpRequest()
@@ -8,9 +12,13 @@ function start () {
   req.onload = function () {
     code = req.responseText
   }
+  var fileChooser = document.getElementById('file1-upload')
+  fileChooser.onclick = function () {
+    this.value = ''
+  }
   document.getElementById('file1-upload').onchange = function () {
     document.getElementById('label-file1').innerHTML = 'Uploaded'
-    document.getElementById('label-file1').style.backgroundColor = '#D3D3D3'
+    document.getElementById('label-file1').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
     var outArr = []
     dataCovar = []
@@ -24,9 +32,13 @@ function start () {
     }
     reader.readAsText(file)
   }
+  var fileChooser = document.getElementById('file2-upload')
+  fileChooser.onclick = function () {
+    this.value = ''
+  }
   document.getElementById('file2-upload').onchange = function () {
     document.getElementById('label-file2').innerHTML = 'Uploaded'
-    document.getElementById('label-file2').style.backgroundColor = '#D3D3D3'
+    document.getElementById('label-file2').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
     var outArr = []
     dataCases = []
@@ -40,9 +52,13 @@ function start () {
     }
     reader.readAsText(file)
   }
+  var fileChooser = document.getElementById('file3-upload')
+  fileChooser.onclick = function () {
+    this.value = ''
+  }
   document.getElementById('file3-upload').onchange = function () {
     document.getElementById('label-file3').innerHTML = 'Uploaded'
-    document.getElementById('label-file3').style.backgroundColor = '#D3D3D3'
+    document.getElementById('label-file3').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
     var outArr = []
     init = []
@@ -53,7 +69,6 @@ function start () {
         outArr.push(lines[line].split(','))
       }
       init.push(outArr)// Upload parameters
-      console.log({init})
     }
     reader.readAsText(file)
   }
@@ -83,12 +98,13 @@ function start () {
       inputArr.push(Number(input))// Read parameters from the table
       if (init.length) {
         cell.querySelector('input#valInp').disabled = 'true'
-        if (i !== 12 && i !== 13) {
+        if (i !== 12) {
           cell.querySelector('input#valInp').value = ''
         } 
       }
     }
-    let times = [inputArr[11], inputArr[12]]
+    let times = [inputArr[11], Number(dataCases[0][0][0]), Number(dataCases[0][dataCases[0].length - 2][0])]
+    inputArr.pop()
     setTimeout(function () {
       if (init.length) {
         for (let i = 0; i < init[0].length - 1; i++) {
@@ -110,14 +126,14 @@ function start () {
     Csv()
   }
 }
-function active (radioBtn, i) {
+function activateRadioButton (radioBtn, i) {
   if (radioBtn.checked) {
     indx[i] = 1
   }
   document.querySelector('button#calc').style.display = ''
   document.querySelector('button#download').style.display = 'none'
 }
-function deactive (radioBtn, i) {
+function deactivateRadioButton (radioBtn, i) {
   if (radioBtn.checked) {
     indx[i] = 0
     document.querySelector('#setup').querySelector('table#table').querySelectorAll('tr')[i + 1].style.backgroundColor = '#FFFFFF'
@@ -137,7 +153,7 @@ function Csv () {
   hiddenElement.setAttribute('download', 'result.csv')
   hiddenElement.click()
 }
-function activeDownload () {
+function activateDownload () {
   document.querySelector('button#download').disabled = false
   document.querySelector('button#download').style.backgroundColor = '#2ed573'
 }
