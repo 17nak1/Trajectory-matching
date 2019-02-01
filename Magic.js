@@ -1,6 +1,6 @@
 let traj_match = require('traj').traj_match
 var dataCovar = [], dataCases = [], inputArr = [], init = [], res = []
-var indx = new Array(12)
+var indx = new Array(12), times = new Array(2)
 
 function start () {
   let req = new XMLHttpRequest()
@@ -20,7 +20,6 @@ function start () {
       for (var line = 1; line < lines.length; line++) {
         outArr.push(lines[line].split(','))
       }
-      // console.log(outArr)
       dataCovar.push(outArr)
     }
     reader.readAsText(file)
@@ -37,7 +36,6 @@ function start () {
       for (var line = 1; line < lines.length; line++) {
         outArr.push(lines[line].split(','))
       }
-      // console.log(outArr)
       dataCases.push(outArr)
     }
     reader.readAsText(file)
@@ -54,8 +52,8 @@ function start () {
       for (var line = 1; line < lines.length; line++) {
         outArr.push(lines[line].split(','))
       }
-      // console.log(outArr)
       init.push(outArr)// Upload parameters
+      console.log({init})
     }
     reader.readAsText(file)
   }
@@ -72,25 +70,29 @@ function start () {
     let rows = table.querySelectorAll('tr')
     for (let p = 0; p < indx.length; p++) {
       if (indx[p] === 1) {
-        rows[p + 1].bgColor = '#2ed573'
+        document.querySelector('#setup').querySelector('table#table').querySelectorAll('tr')[p + 1].style.backgroundColor ='#2ed573'
+      } else {
+        rows[p + 1].bgColor = '#FFFFFF'
       }
     }
     for (let i = 1; i < rows.length; i++) {
       let row = rows[i]
       let cols = row.querySelectorAll('td')
       let cell = cols[cols.length - 1]
+      var input = cell.querySelector('input#valInp').value;
+      inputArr.push(Number(input))// Read parameters from the table
       if (init.length) {
         cell.querySelector('input#valInp').disabled = 'true'
-        cell.querySelector('input#valInp').value = ''
-      } else {
-        var input = cell.querySelector('input#valInp').value
-        inputArr.push(Number(input))// Read parameters from the table
+        if (i !== 12 && i !== 13) {
+          cell.querySelector('input#valInp').value = ''
+        } 
       }
     }
+    let times = [inputArr[11], inputArr[12]]
     setTimeout(function () {
       if (init.length) {
         for (let i = 0; i < init[0].length - 1; i++) {
-          var ans = traj_match(dataCovar[0], dataCases[0], init[0][i], indx)
+          var ans = traj_match(dataCovar[0], dataCases[0], init[0][i], times, indx)
           res.push(ans)
         }
         console.log(res)
@@ -98,10 +100,10 @@ function start () {
         var tem = inputArr[9]
         inputArr[9] = inputArr[10]
         inputArr[10] = tem
-        res.push(traj_match(dataCovar[0], dataCases[0], inputArr, indx))
+        res.push(traj_match(dataCovar[0], dataCases[0], inputArr, times, indx))
         console.log(res)
       }
-      res.splice(0, 0, ['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'R_0', 'I_0', 't0', 't1', 'LogLik'])
+      res.splice(0, 0, ['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'R_0', 'I_0', 'LogLik'])
     }, 0)
   }
   downloadButton.onclick = function () {

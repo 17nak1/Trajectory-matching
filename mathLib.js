@@ -2,7 +2,8 @@ var mathLib = {}
 let pi = 3.141592654
 var erf = require('math-erf')
 var seedrandom = require('seedrandom')
-var rng = seedrandom('915909831')
+var rng = seedrandom('43553')
+
 mathLib.pnorm = function (x, mu = 0, sd = 1, lower_tail = true, give_log = false) {
   if (sd < 0) {
     return NaN
@@ -16,20 +17,12 @@ mathLib.pnorm = function (x, mu = 0, sd = 1, lower_tail = true, give_log = false
   }
   return ans
 }
+
 mathLib.rnorm = function (mu = 0, sd = 1) {
   var val = Math.sqrt(-2.0 * Math.log(rng())) * Math.cos(2.0 * pi * rng())
   return val * sd + mu
 }
 
-// mathLib.rnorm = function (mu = 0, sd = 1) {
-//   if (sd < 0) {
-//     return NaN
-//   }
-//   let arr, val, a = 1 / Math.sqrt(2 * pi )
-//   val = rng()
-//   arr = a * Math.exp(- Math.pow(val,2)/ 2 )
-//   return (arr * sd + mu)  // Why the fraction makes cases similar?
-// }
 mathLib.dpois = function (x, lambda) {
   let ans, total = 0
   if (isNaN(x) || isNaN(lambda) || lambda < 0) {
