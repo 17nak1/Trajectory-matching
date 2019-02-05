@@ -2393,7 +2393,7 @@ function traj_match (dataCovar, dataCases, params, times, index) {
 
 //* ODE solver
 function EulersMethod (interpolPopulation, interpolBirth, params, times, deltaT) {
-  var steps = 1000 // Total number of steps in the Euler method
+  var steps = 500 // Total number of steps in the Euler method
   var t0 = times[0]
   var dataStartTime = times[1]
   var datadataEndTime = times[2]
