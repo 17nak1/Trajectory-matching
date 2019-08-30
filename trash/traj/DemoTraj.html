@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Trajectory Matching</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handsontable/2.0.0/handsontable.min.js"></script>
+  <!-- <script type=module src="./mathLib.js"></script> -->
+  <script src="./bundle.js"></script>
+  <script src="./Magic.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/2.0.0/handsontable.min.css">
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+</head>
+  <body onload="start()">
+    <div id="banner">
+      <div class="authors">
+        <h1 id="header">Trajectory Matching</h1>
+      </div>
+      <hr>
+    </div>
+    <div id="spacer" style="margin-top: 130px"></div>
+   
+    <div id="setupContainer">
+     <p style="text-indent:15px">This function attempts to match trajectories of a model's deterministic skeleton to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. Accordingly, this method uses only the skeleton and dmeasure components of a POMP model.</p>
+  </div>
+</div>
+     <br>
+      <section id="setup">
+        <div id="setup">
+          <div id="table">
+            <table id="table">
+              <tr>
+                <th>Symbol</th>
+                <th>Definition</th>
+                <th>Fixed /  Estimated</th>
+                <th>Initial value</th>
+              </tr>
+              <tr>
+                <td class="variable"> \(R_0\)</td>
+                <td style="text-align: left">Basic reproduction number</td>
+                <td>
+                    <input checked="checked" id="value"    type="radio" name="v1" onchange ="deactivateRadioButton(this,0);"> 
+                    <input type="radio" name="v1" onchange="activateRadioButton(this,0);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="25.949381184466">
+                </td>
+              </tr>
+              <tr>
+                <td class="variable">a</td>
+                <td style="text-align: left">Amplitude of seasonality </td>
+                <td>
+                  <input checked="checked" id="value"   type="radio" name="v2" onchange ="deactivateRadioButton(this,1);">
+                  <input type="radio" name="v2" onchange="activateRadioButton(this,1);">
+                </td>
+                <td> 
+                  <input id= valInp style="width:145px;"type="number" value="0.275596931894255">
+                </td>
+              </tr>
+              <tr>
+                <td class="variable">\(\gamma\)</td>
+                <td style="text-align: left">Recovery rate </td>
+                <td>
+                  <input  checked="checked" id="value"   id="fix" type="radio" name="v3" onchange ="deactivateRadioButton(this,2);"> 
+                  <input id="range" type="radio" name="v3" onchange="activateRadioButton(this,2);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number"  value="73.05"> 
+                </td>
+              </tr>
+              <tr>
+                <td class="variable">\(\mu\)</td>
+                <td style="text-align: left">Death minus net immigration rate</td>
+                <td>
+                  <input checked="checked" id="value"   id="fix" type="radio" name="v4" onchange ="deactivateRadioButton(this,3);"> 
+                  <input id="range" type="radio" name="v4" onchange="activateRadioButton(this,3);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="0.000994226495524">
+                </td>
+              </tr>
+              <tr> 
+                <td class="variable">\(\sigma\)</td>
+                <td style="text-align: left">Incubation rate</td>
+                <td>
+                  <input checked="checked" id="value"   type="radio" name="v5" onchange ="deactivateRadioButton(this,4);"> 
+                  <input id="range" type="radio" name="v5" onchange="activateRadioButton(this,4);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="45.66">
+                </td>
+              </tr>
+              <tr>
+                <td class="variable">\(\rho\)</td>
+                <td style="text-align: left">Reporting probability</td>
+                <td>
+                  <input checked="checked" id="value"   type="radio" name="v6" onchange ="deactivateRadioButton(this,5);"> 
+                  <input id="range" type="radio" name="v6" onchange="activateRadioButton(this,5);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="0.456484071822573"> 
+                </td>
+              </tr>
+              <tr>
+                <td class="variable">\(\psi\)</td>
+                <td style="text-align: left">Reporting overdispersion</td>
+                <td>
+                  <input checked="checked" id="value"   type="radio" name="v7" onchange ="deactivateRadioButton(this,6);"> 
+                  <input id="range" type="radio" name="v7" onchange="activateRadioButton(this,6);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="1.02793355988519">
+                </td>
+              </tr> 
+              <tr>
+                <td class="variable">\(S(0)\)</td>
+                <td style="text-align: left">Initial fraction of susceptibles</td>
+                <td>
+                  <input  checked="checked" id="value"   type="radio" name="v8" onchange ="deactivateRadioButton(this,6);"> 
+                  <input id="range" type="radio" name="v8" onchange="activateRadioButton(this,6);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="0.008210807">
+                </td>
+              </tr> 
+              <tr>
+                <td class="variable">\(E(0)\)</td>
+                <td style="text-align: left">RInitial fraction of exposed</td>
+                <td>
+                  <input checked="checked" id="value"   type="radio" name="v9" onchange ="deactivateRadioButton(this,6);"> 
+                  <input id="range" type="radio" name="v9" onchange="activateRadioButton(this,6);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="0.001633519">
+                </td>
+              </tr> 
+              <tr>
+                <td class="variable">\(I(0)\)</td>
+                <td style="text-align: left">Initial fraction of infected</td>
+                <td>
+                  <input  checked="checked" id="value"   type="radio" name="v10" onchange ="deactivateRadioButton(this,6);"> 
+                  <input id="range" type="radio" name="v10" onchange="activateRadioButton(this,6);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="1.1e-08">
+                </td>
+              </tr> 
+              <tr>
+                <td class="variable">\(R(0)\)</td>
+                <td style="text-align: left">Initial fraction of recovered</td>
+                <td>
+                  <input  checked="checked" id="value"   type="radio" name="v11" onchange ="deactivateRadioButton(this,6);"> 
+                  <input id="range" type="radio" name="v11" onchange="activateRadioButton(this,6);">
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="0.990155663">
+                </td>
+              </tr>   
+              <tr>
+                <td class="variable">\(t_0\)</td>
+                <td style="text-align: left">Initial time</td>
+                <td>
+                </td>
+                <td>
+                  <input id= valInp style="width:145px;"type="number" value="1940">
+                </td>
+              </tr>              
+            </table>
+          </div>
+        </div>
+      </section>
+      <section id="step">
+        <div>
+          <label id = "label-file1" for="file1-upload" class="custom-button" style="background-color:#2ed573">
+          Upload data covariance
+          </label>
+          <input id="file1-upload" type="file" style="display:none;">
+        </div>
+        <div>
+          <label id = "label-file2" for="file2-upload" class="custom-button" style="background-color:#2ed573">
+          Upload data cases
+          </label>
+          <input id="file2-upload" type="file" style="display:none;">
+        </div>
+        <div>
+          <label id = "label-file3" for="file3-upload" class="custom-button" style="background-color:#2ed573">
+          Upload initial values
+          </label>
+          <input id="file3-upload" type="file" style="display:none;">
+        </div>
+      </section>
+      <section id="step">
+        <div >
+          <button id="calc">Compute</button>
+          <button id="download" style="background-color:#D3D3D3 " disabled="true">Download Results</button> 
+        </div>
+      </section>
+    <br>
+     <div id="plot">
+        </div>
+    <div  id="graphContainer" >
+      <div  id="fullGraph"></div>
+    </div>
+    <div id="tableContainer">
+      <div id="fullTable"></div>
+    </div>
+  </body>
+</html>
